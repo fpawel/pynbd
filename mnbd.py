@@ -31,7 +31,7 @@ def mount(nbd_device, mount_point, host, port):
     check_output(['kpartx', '-a', '-s', '-v', nbd_device])
 
     check_output([
-        'mount', '-t', "ntfs", '-o', "rw",
+        'mount', '-t', "ntfs-3g", '-o', "rw",
         get_device_mapper_path(nbd_device), mount_point
     ])
 
