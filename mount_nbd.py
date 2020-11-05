@@ -6,8 +6,8 @@ import os
 import sys
 import shutil
 from pathlib import Path
-from p2v.table import get_mbr_disk_id, get_gpt_partition_id
-from ntfs3g.volume import get_ntfs_volume_info
+from .p2v.table import get_mbr_disk_id, get_gpt_partition_id
+from .ntfs import get_ntfs_volume_info
 
 logging.basicConfig(format='[%(process)d] %(levelname)s %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
