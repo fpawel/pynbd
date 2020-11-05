@@ -14,9 +14,9 @@ def unmount(nbd_device, mount_point):
     parts = get_partition(nbd_device)
     log.info(parts)
     for part in parts:
-        device, path = get_device_path_of_partition(nbd_device, mount_point, part)
+        _, path = get_device_path_of_partition(nbd_device, mount_point, part)
         check_output(['umount', '-l', path])
-        check_output(['nbd-client', '-d', device])
+        check_output(['nbd-client', '-d', nbd_device])
 
 
 def mount(nbd_device, mount_point, mode, host, port):
