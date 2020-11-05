@@ -24,12 +24,12 @@ def mount(nbd_device, mount_point, mode, host, port):
 
     dir_path = Path(mount_point)
     if dir_path.exists() and dir_path.is_dir():
-        shutil.rmtree(dir_path)
+        shutil.rmtree(mount_point)
     dir_path.mkdir(parents=True, exist_ok=False)
 
     log.info('run nbd-client for %s...' % nbd_device)
     check_output([
-        'sudo', "-S",
+        'sudo',
         'nbd-client', '-p', '-t', '60', '-b', '512', host, port,
         nbd_device
     ])
