@@ -1,13 +1,23 @@
 import parted
 import logging
+import binascii
 import subprocess
 import os
 import sys
 import shutil
 from pathlib import Path
+from p2v.table import get_mbr_disk_id, get_gpt_partition_id
+# from ntfs import get_ntfs_volume_info
 
 logging.basicConfig(format='[%(process)d] %(levelname)s %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
+
+supported_fs = (
+    "ntfs",
+    "ext2",
+    "ext3",
+    "ext4"
+)
 
 
 def unmount(nbd_device, mount_point):
@@ -35,6 +45,7 @@ def mount(nbd_device, mount_point, mode, host, port):
     check_output(['kpartx', '-a', '-s', '-v', nbd_device])
 
     parts = get_partition(nbd_device)
+    log.info(parts)
 
     partitions = []
 
@@ -42,6 +53,14 @@ def mount(nbd_device, mount_point, mode, host, port):
         partition = parts[part]
         partition['part'] = part
         device, path = get_device_path_of_partition(nbd_device, mount_point, part)
+
+        # if partition['filesystem'] == 'ntfs':
+        #     # get cluster size
+        #     volume_info = get_ntfs_volume_info(device, force=True)
+        #     log.info("volume info: %s", volume_info)
+        #     cluster_size = int(volume_info['bytes_per_cluster'])
+        #     log.info('get cluster size for %s: %s', device, cluster_size)
+        #     partition['cluster_size'] = cluster_size
 
         if not os.path.exists(path):
             os.makedirs(path, exist_ok=True)
@@ -59,7 +78,6 @@ def mount(nbd_device, mount_point, mode, host, port):
         ])
 
         partitions.append(partition)
-        log.info(partition)
 
     return partitions
 
@@ -80,12 +98,29 @@ def get_partition(path):
     except parted.disk._ped.DiskLabelException as e:
         raise Exception('failed to parse disk for %s' % path) from e
 
+    disk_id = None
     mapping = dict()
     for partition in disk.partitions:
         if partition.fileSystem is None:
             raise Exception("Unknown file system: %s" % partition)
+        if partition.fileSystem.type not in supported_fs:
+            raise Exception("Unsupported file system: %s" % partition)
+        geometry = partition.geometry
         attr = dict()
+        attr['start'] = geometry.start * 512
+        attr['length'] = geometry.length * 512
+        attr['type'] = disk.type
         attr['filesystem'] = partition.fileSystem.type
+        if disk.type == 'msdos':
+            if not disk_id:
+                disk_id = get_mbr_disk_id(path)
+                disk_id = binascii.hexlify(disk_id)
+            attr['disk_id'] = disk_id
+        elif disk.type == 'gpt':
+            guid = get_gpt_partition_id(path, partition.number)
+            guid = binascii.hexlify(guid)
+            attr['guid'] = guid
+            log.debug(attr)
         mapping[str(partition.number)] = attr
     return mapping
 
