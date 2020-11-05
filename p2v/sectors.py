@@ -1,4 +1,4 @@
-from . import P2VEx
+from p2v import P2VEx
 
 def Sectors (bytecount):
    if bytecount % 512 != 0:

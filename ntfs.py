@@ -2,7 +2,6 @@ import re
 import os
 import subprocess
 import props
-from pathlib import Path
 
 
 class Ntfs3gError(Exception):

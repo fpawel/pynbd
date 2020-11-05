@@ -2,8 +2,8 @@ import mproc
 import parted
 import logging
 
-from . import P2VEx
-from .partition import \
+from p2v import P2VEx
+from p2v.partition import \
     GptPartition, \
     MbrDisk, \
     PartitionStyle

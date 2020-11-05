@@ -1,6 +1,6 @@
-from . import P2VEx
-from .identity import GptFlavor, Id, MbrDiskId, MbrFlavor
-from .partition import Partition, PartitionStyle, GptDisk
+from p2v import P2VEx
+from p2v.identity import GptFlavor, Id, MbrDiskId, MbrFlavor
+from p2v.partition import Partition, PartitionStyle, GptDisk
 
 from units.bytes import Mebibytes
 

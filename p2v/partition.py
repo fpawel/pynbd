@@ -1,9 +1,9 @@
 import logging
 
-from .identity import Id
-from .sectors import SectorBytes
-from .volume import Volume
-from . import P2VEx
+from p2v.identity import Id
+from p2v.sectors import SectorBytes
+from p2v.volume import Volume
+from p2v import P2VEx
 from units.bytes import AlignedOffset, Mebibytes
 
 log = logging.getLogger(__name__)

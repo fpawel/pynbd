@@ -1,4 +1,4 @@
-from . import P2VEx
+from p2v import P2VEx
 import binascii
 import ctypes
 import logging

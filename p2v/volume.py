@@ -1,8 +1,6 @@
 import logging
-import os
 
-from .identity import Id
-from . import P2VEx
+from p2v.identity import Id
 
 log = logging.getLogger(__name__)
 
