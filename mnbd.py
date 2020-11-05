@@ -4,7 +4,7 @@ import sys
 import shutil
 from pathlib import Path
 
-logging.basicConfig(format='[%(process)d] %(levelname)s %(message)s', level=logging.INFO)
+logging.basicConfig(format='[%(process)d] SETUP-P2V %(levelname)s %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
