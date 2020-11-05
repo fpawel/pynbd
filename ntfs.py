@@ -54,7 +54,6 @@ def get_ntfs_volume_info(device, force=False):
         os.path.join(
             os.path.realpath(__file__),
             os.pardir,
-            os.pardir,
             "extern", "ntfsvolume.axcient"
         )
     )
