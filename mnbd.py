@@ -7,7 +7,7 @@ import sys
 import shutil
 from pathlib import Path
 from p2v.table import get_mbr_disk_id, get_gpt_partition_id
-from ntfs import get_ntfs_volume_info
+# from ntfs import get_ntfs_volume_info
 
 logging.basicConfig(format='[%(process)d] %(levelname)s %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -54,13 +54,13 @@ def mount(nbd_device, mount_point, mode, host, port):
         partition['part'] = part
         device, path = get_device_path_of_partition(nbd_device, mount_point, part)
 
-        if partition['filesystem'] == 'ntfs':
-            # get cluster size
-            volume_info = get_ntfs_volume_info(device, force=True)
-            log.info("volume info: %s", volume_info)
-            cluster_size = int(volume_info['bytes_per_cluster'])
-            log.info('get cluster size for %s: %s', device, cluster_size)
-            partition['cluster_size'] = cluster_size
+        # if partition['filesystem'] == 'ntfs':
+        #     # get cluster size
+        #     volume_info = get_ntfs_volume_info(device, force=True)
+        #     log.info("volume info: %s", volume_info)
+        #     cluster_size = int(volume_info['bytes_per_cluster'])
+        #     log.info('get cluster size for %s: %s', device, cluster_size)
+        #     partition['cluster_size'] = cluster_size
 
         if not os.path.exists(path):
             os.makedirs(path, exist_ok=True)
