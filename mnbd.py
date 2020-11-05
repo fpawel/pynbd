@@ -15,7 +15,7 @@ def unmount(nbd_device, mount_point):
     check_output(['nbd-client', '-d', nbd_device])
 
 
-def mount(nbd_device, mount_point, mode, host, port):
+def mount(nbd_device, mount_point, host, port):
 
     dir_path = Path(mount_point)
     if dir_path.exists() and dir_path.is_dir():
