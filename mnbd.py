@@ -1,7 +1,6 @@
 import parted
 import logging
 import subprocess
-import os
 import sys
 import shutil
 from pathlib import Path
@@ -12,6 +11,7 @@ log = logging.getLogger(__name__)
 
 def unmount(nbd_device, mount_point):
     check_output(['umount', '-l', mount_point])
+    shutil.rmtree(mount_point)
     check_output(['nbd-client', '-d', nbd_device])
 
 
