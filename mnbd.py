@@ -1,14 +1,19 @@
 import logging
 import subprocess
 import sys
+import os
 import shutil
+import string
 from pathlib import Path
+# pip3 install --trusted-host pip-dev.axcient.cloud --extra-index-url https://pip-dev.axcient.cloud/  axcient-p2v
+import p2v
 
 logging.basicConfig(format='[%(process)d] SETUP-P2V %(levelname)s %(message)s', level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-def unmount(nbd_device, mount_point):
+def unmount(nbd_device):
+    mount_point = get_mount_point_path_for_nbd_device(nbd_device)
     check_output(['umount', '-l', mount_point])
     shutil.rmtree(mount_point)
     # delete partition mappings
@@ -16,7 +21,10 @@ def unmount(nbd_device, mount_point):
     check_output(['nbd-client', '-d', nbd_device])
 
 
-def mount(nbd_device, mount_point, host, port):
+def mount(host, port):
+
+    nbd_device = get_unused_nbd_device_name()
+    mount_point = get_mount_point_path_for_nbd_device(nbd_device)
 
     mount_point_dir_path = Path(mount_point)
     if mount_point_dir_path.exists() and mount_point_dir_path.is_dir():
@@ -35,6 +43,29 @@ def mount(nbd_device, mount_point, host, port):
         'mount', '-t', "ntfs-3g", '-o', "rw",
         get_device_mapper_path(nbd_device), mount_point
     ])
+
+
+def get_mount_point_path_for_nbd_device(nbd_device):
+    return os.path.join( "tmp", "axcient", "nbd", nbd_device)
+
+
+def get_unused_nbd_device_name():
+
+    for suffix in string.ascii_lowercase:
+        nbd_device_name = "/dev/nbd%s" % suffix
+        try:
+            cmd = ["nbd-client", "-c", nbd_device_name]
+            check_output(cmd)
+            fd = os.open(sys.argv[1], os.O_EXCL)
+            os.close(fd)
+            return nbd_device_name
+        except:
+            continue
+    raise ErrorNoUnusedNbdDevices("no unused nbd devices")
+
+
+class ErrorNoUnusedNbdDevices(Exception):
+    pass
 
 
 def get_device_mapper_path(nbd_device):
