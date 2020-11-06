@@ -45,7 +45,7 @@ def mount(host, port):
 
 
 def get_mount_point_path_for_nbd_device(nbd_device):
-    return os.path.join( "tmp", "axcient", "nbd", nbd_device)
+    return os.path.join("/tmp", "axcient", "mnt", os.path.basename(nbd_device))
 
 
 def get_unused_nbd_device_name():
