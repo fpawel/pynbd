@@ -49,7 +49,7 @@ def get_mount_point_path_for_nbd_device(nbd_device):
 
 
 def get_unused_nbd_device_name():
-    for suffix in range(1000, 10000):
+    for suffix in range(10000):
         nbd_device_name = "/dev/nbd%s" % suffix
         try:
             cmd = ["nbd-client", "-c", nbd_device_name]
